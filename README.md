@@ -30,7 +30,7 @@ Provision the environment:
 
     rake provision
 
-Open https://<your search domain name>/_plugin/head
+Open `https://<your search domain name>/_plugin/head`
 
 Destroy the environment:
 
