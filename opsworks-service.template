@@ -1,0 +1,300 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Parameters": {
+        "CookbookRepo": {
+            "Description": "GitURL",
+            "Type": "String",
+            "Default": "https://github.com/ThoughtWorksStudios/opsworks-elasticsearch-cookbook"
+        },
+
+        "CookbookRepoRevision": {
+            "Description": "Git Revision",
+            "Type": "String",
+            "Default": "75c4941b097c4b4d044b2a6cb745f587532e4fc6"
+        },
+
+        "SSLCertificateName": {
+            "Description": "SSL cert.",
+            "Type": "String"
+        },
+
+        "InstanceCount": {
+            "Description": "How many nodes to expect in the cluster.",
+            "Type": "String"
+        },
+
+        "MinMasterNodes": {
+            "Description": "How many master nodes should we have to consider cluster operational.",
+            "Type": "String"
+        },
+
+        "SearchUser": {
+            "Description": "username to access the ElasticSearch cluster.",
+            "Type": "String"
+        },
+
+        "SearchPassword": {
+            "Description": "password to access the ElasticSearch cluster.",
+            "Type": "String"
+        },
+
+        "ClusterName": {
+            "Description": "The name of the ElasticSearch cluster",
+            "Type": "String"
+        },
+
+        "Route53ZoneName": {
+            "Description": "route53 zone under which to setup the DNS record",
+            "Type": "String"
+        },
+
+        "SearchDomainName": {
+            "Description": "Domain name for the search service",
+            "Type": "String"
+        },
+
+        "SshKeyName": {
+            "Description": "SSH key name for EC2 instances",
+            "Type": "String"
+        }
+
+    },
+
+    "Outputs": {
+        "StackId": {
+            "Description": "opsworks stack id ",
+            "Value": { "Ref": "SearchStack"}
+        },
+
+        "LayerId": {
+            "Description": "opsworks search layer id ",
+            "Value": { "Ref": "SearchLayer"}
+        }
+
+    },
+
+    "Resources": {
+
+        "LoadBalancer" : {
+            "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+            "Properties" : {
+                "AvailabilityZones" : { "Fn::GetAZs" : "" },
+                "Listeners" : [
+                    {
+                        "LoadBalancerPort" : "443",
+                        "InstancePort" : "80",
+                        "Protocol" : "HTTPS",
+                        "SSLCertificateId": {
+                            "Fn::Join": ["", ["arn:aws:iam::", { "Ref": "AWS::AccountId" }, ":server-certificate/", { "Ref" : "SSLCertificateName" }]]
+                        }
+                    }
+                ],
+                "HealthCheck" : {
+                    "Target" : "TCP:80",
+                    "HealthyThreshold" : "2",
+                    "UnhealthyThreshold" : "8",
+                    "Interval" : "30",
+                    "Timeout" : "20"
+                }
+            }
+        },
+
+
+        "DNSRecord": {
+            "Type" : "AWS::Route53::RecordSet",
+            "Properties" : {
+                "HostedZoneName" : {"Ref": "Route53ZoneName"},
+                "Type" : "CNAME",
+                "Name" : { "Ref": "SearchDomainName"},
+                "ResourceRecords" : [ {"Fn::GetAtt":["LoadBalancer","DNSName"]}],
+                "TTL" : "30"
+            }
+        },
+
+        "ELBAttachment" : {
+            "Type" : "AWS::OpsWorks::ElasticLoadBalancerAttachment",
+            "Properties" : {
+                "ElasticLoadBalancerName" : { "Ref" : "LoadBalancer" },
+                "LayerId" : { "Ref" : "SearchLayer" }
+            }
+        },
+
+
+        "SearchStack": {
+            "Type": "AWS::OpsWorks::Stack",
+            "Properties": {
+                "Name": {
+                    "Ref": "AWS::StackName"
+                },
+                "CustomJson": {
+                    "java": {
+                        "jdk_version": "7",
+                        "oracle": {
+                            "accept_oracle_download_terms": "true"
+                        },
+                        "accept_license_agreement": "true",
+                        "install_flavor": "oracle"
+                    },
+                    "elasticsearch": {
+                        "nginx": {
+                            "users": [{
+                                "username": {
+                                    "Ref": "SearchUser"
+                                },
+                                "password": {
+                                    "Ref": "SearchPassword"
+                                }
+                            }],
+                            "allow_cluster_api": "true",
+                            "port": 80
+                        },
+                        "cluster": {
+                            "name": { "Ref" : "ClusterName"}
+                        },
+                        "gateway": {
+                            "expected_nodes": { "Ref": "InstanceCount" }
+                        },
+                        "discovery": {
+                            "type": "ec2",
+                            "zen": {
+                                "minimum_master_nodes": { "Ref": "MinMasterNodes" },
+                                "ping": {
+                                    "multicast": {
+                                        "enabled": false
+                                    }
+                                }
+                            },
+                            "ec2": {
+                                "tag": {
+                                    "opsworks:stack": {
+                                        "Ref": "AWS::StackName"
+                                    }
+                                }
+                            }
+                        },
+                        "path": {
+                            "data": "/mnt/elasticsearch-data"
+                        },
+                        "cloud": {
+                            "aws": {
+                                "region": "us-west-1"
+                            }
+                        },
+                        "custom_config": {
+                            "cluster.routing.allocation.awareness.attributes": "rack_id",
+                            "index": "\n  analysis:\n    analyzer:\n      default_index:\n        filter:\n        - standard\n        - lowercase\n        - snowball\n        tokenizer: standard\n      default_search:\n        tokenizer: standard\n        filter:\n        - standard\n        - lowercase\n        - snowball\n"
+                        }
+                    }
+                },
+                "ServiceRoleArn": {
+                    "Fn::Join": ["", ["arn:aws:iam::", { "Ref": "AWS::AccountId" }, ":role/aws-opsworks-service-role"]]
+                },
+                "DefaultInstanceProfileArn": {
+                    "Fn::Join": ["", ["arn:aws:iam::", { "Ref": "AWS::AccountId" }, ":instance-profile/aws-opsworks-ec2-role"]]
+                },
+                "ConfigurationManager": {
+                    "Name": "Chef",
+                    "Version": "11.10"
+                },
+                "ChefConfiguration": {
+                    "BerkshelfVersion": "3.1.3",
+                    "ManageBerkshelf": true
+                },
+                "DefaultOs": "Amazon Linux 2014.09",
+                "DefaultRootDeviceType": "ebs",
+                "DefaultSshKeyName": { "Ref": "SshKeyName" },
+                "UseCustomCookbooks": true,
+                "UseOpsworksSecurityGroups": false,
+                "CustomCookbooksSource": {
+                    "Type": "git",
+                    "Url": {
+                        "Ref": "CookbookRepo"
+                    },
+                    "Revision": { "Ref": "CookbookRepoRevision" }
+                }
+            }
+        },
+
+        "SearchSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "so that ES cluster can find other nodes",
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "80",
+                        "ToPort": "80",
+                        "SourceSecurityGroupOwnerId": {
+		            "Fn::GetAtt": [
+                                "LoadBalancer",
+                                "SourceSecurityGroup.OwnerAlias"
+                            ]
+	                },
+                        "SourceSecurityGroupName": {
+                            "Fn::GetAtt": [
+                                "LoadBalancer",
+                                "SourceSecurityGroup.GroupName"
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+
+        "InterConnectingIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Properties": {
+                "GroupName": { "Ref": "SearchSecurityGroup" },
+                "IpProtocol": "tcp",
+                "FromPort": "0",
+                "ToPort": "65535",
+                "SourceSecurityGroupName": { "Ref": "SearchSecurityGroup" }
+            }
+        },
+
+        "SearchLayer": {
+            "Type": "AWS::OpsWorks::Layer",
+            "Properties": {
+                "StackId": {
+                    "Ref": "SearchStack"
+                },
+                "Name": "Search",
+                "Type": "custom",
+                "Shortname": "search",
+                "CustomRecipes": {
+                    "Setup": [
+                        "apt",
+                        "ark",
+                        "elasticsearch",
+                        "elasticsearch::aws",
+                        "elasticsearch::proxy",
+                        "java",
+                        "layer-custom::esplugins",
+                        "layer-custom::allocation-awareness",
+                        "layer-custom::esmonit",
+                        "layer-custom::cloudwatch-custom"
+                    ]
+                },
+                "EnableAutoHealing": false,
+                "AutoAssignElasticIps": false,
+                "AutoAssignPublicIps": true,
+                "VolumeConfigurations": [
+                    {
+                        "MountPoint": "/mnt/elasticsearch-data",
+                        "NumberOfDisks": 1,
+                        "Size": 100
+                    }
+                ],
+                "CustomSecurityGroupIds": [
+                    {
+                        "Fn::GetAtt": [
+                            "SearchSecurityGroup",
+                            "GroupId"
+                        ]
+                    }
+                ]
+            }
+        }
+
+    }
+}
