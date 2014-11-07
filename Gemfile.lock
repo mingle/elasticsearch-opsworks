@@ -8,9 +8,11 @@ GEM
       nokogiri (>= 1.4.4)
     json (1.8.1-java)
     nokogiri (1.6.4-java)
+    rake (10.3.2)
 
 PLATFORMS
   java
 
 DEPENDENCIES
   aws-sdk
+  rake
