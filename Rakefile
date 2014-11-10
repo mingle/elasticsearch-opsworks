@@ -90,7 +90,7 @@ def update_instances(stack_id, layer_id, count)
   count_to_create = count - existing_instances.size
   new_instances = (1..count_to_create).map do |i|
     instance = create_instance(stack_id, layer_id, azs[(existing_instances.size + i) % azs.size])
-    puts "Created instance #{instance[:hostname]}, id: #{instance[:instance_id]}, starting the instance now."
+    puts "Created instance, id: #{instance[:instance_id]}, starting the instance now."
     opsworks.start_instance(:instance_id => instance[:instance_id])
     instance
   end
@@ -111,9 +111,9 @@ def update_instances(stack_id, layer_id, count)
     replacement = create_instance(stack_id, layer_id, instance[:availability_zone])
     attach_ebs_volumes(replacement[:instance_id], ebs_volume_ids)
 
-    puts "Starting new instance #{replacement[:hostname]}, id: #{replacement[:instance_id]}"
+    puts "Starting new instance, id: #{replacement[:instance_id]}"
     opsworks.start_instance(:instance_id => replacement[:instance_id])
-    wait_for_instance(replacement[:instance_id], 'online')
+    wait_for_instance(replacement[:instance_id], "online")
 
     puts "Deleting old instance #{instance[:hostname]}, #{instance[:instance_id]}"
     opsworks.delete_instance(:instance_id => instance[:instance_id])
