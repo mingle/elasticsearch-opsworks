@@ -136,12 +136,6 @@
                         "install_flavor": "oracle"
                     },
                     "elasticsearch": {
-                        "version": "1.3.5",
-                        "plugins" : {
-                            "elasticsearch/elasticsearch-cloud-aws": {
-                                "version": "2.3.0"
-                            }
-                        },
                         "nginx": {
                             "users": [{
                                 "username": {
