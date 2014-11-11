@@ -161,7 +161,8 @@ task :provision do
       puts "Updating CloudFormation stack #{stack_name}"
       cf_stack.update(:template => template, :parameters => params)
     rescue => e
-      puts "#{e.message}"
+      raise unless e.message =~ /No updates are to be performed/
+      puts "Your CloudFormation stack is already up to date"
     end
   else
     puts "Creating CloudFormation stack #{stack_name}"
