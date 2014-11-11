@@ -157,8 +157,12 @@ task :provision do
   }
 
   if cf_stack.exists?
-    puts "Updating CloudFormation stack #{stack_name}"
-    cf_stack.update(:template => template, :parameters => params)
+    begin
+      puts "Updating CloudFormation stack #{stack_name}"
+      cf_stack.update(:template => template, :parameters => params)
+    rescue => e
+      puts "#{e.message}"
+    end
   else
     puts "Creating CloudFormation stack #{stack_name}"
     cf_stack = cfm.stacks.create(stack_name, template, :parameters => params)
