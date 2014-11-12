@@ -3,6 +3,7 @@ require 'aws-sdk'
 
 SUCCESS_STATS = [:create_complete, :update_complete, :update_rollback_complete]
 FAILED_STATS = [:create_failed, :update_failed]
+DEFAULT_RECIPES = "apt,ark,elasticsearch,elasticsearch::aws,elasticsearch::proxy,java,layer-custom::esplugins,layer-custom::allocation-awareness,layer-custom::esmonit,layer-custom::cloudwatch-custom"
 
 def opsworks
   AWS::OpsWorks::Client.new({:region => 'us-east-1'})
@@ -153,8 +154,20 @@ task :provision do
     "SearchPassword" => ENV["SEARCH_PASSWORD"] || "pass",
     "InstanceCount" => instance_count.to_s,
     "MinMasterNodes" => min_master_node_count(instance_count).to_s,
-    "ClusterName" => "#{environment}-search-cluster"
+    "ClusterName" => "#{environment}-search-cluster",
+    "RecipeList" => DEFAULT_RECIPES
   }
+
+  if ENV["PAPERTRAIL_ENDPOINT"].to_s =~ /[^\:]+:[\d]+/
+    papertrail_host, papertrail_port = ENV["PAPERTRAIL_ENDPOINT"].split(":")
+    puts "PaperTrail configured: host=#{papertrail_host}, port=#{papertrail_port}"
+
+    params.merge!(
+      "RecipeList" => [DEFAULT_RECIPES, "papertrail"].join(","),
+      "PaperTrailHost" => papertrail_host,
+      "PaperTrailPort" => papertrail_port
+    )
+  end
 
   if cf_stack.exists?
     begin

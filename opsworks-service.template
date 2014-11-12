@@ -8,9 +8,14 @@
         },
 
         "CookbookRepoRevision": {
-            "Description": "Git Revision",
+            "Description": "Git Revision/Tag",
             "Type": "String",
-            "Default": "75c4941b097c4b4d044b2a6cb745f587532e4fc6"
+            "Default": "0.0.1"
+        },
+
+        "RecipeList": {
+            "Description": "The list of cookbooks to set up the cluster",
+            "Type": "CommaDelimitedList"
         },
 
         "SSLCertificateName": {
@@ -56,6 +61,19 @@
         "SshKeyName": {
             "Description": "SSH key name for EC2 instances",
             "Type": "String"
+        },
+
+        "PaperTrailHost": {
+            "Description": "The PaperTrail endpoint hostname. Only required if you add the papertrail cookbook.",
+            "Type": "String",
+            "Default": "logs.papertrailapp.com"
+        },
+
+        "PaperTrailPort": {
+            "Description": "The PaperTrail endpoint port. Only required if you add the papertrail cookbook.",
+            "Type": "Number",
+            "MinValue" : "0",
+            "MaxValue" : "65535"
         }
 
     },
@@ -135,21 +153,26 @@
                         "accept_license_agreement": "true",
                         "install_flavor": "oracle"
                     },
+                    "papertrail": {
+                        "remote_host": { "Ref": "PaperTrailHost" },
+                        "remote_port": { "Ref": "PaperTrailPort" },
+                        "watch_files": [
+                            { "filename": { "Fn::Join": ["", ["/usr/local/var/log/elasticsearch/", { "Ref": "ClusterName" }, ".log"]] }, "tag": "search" },
+                            { "filename": { "Fn::Join": ["", ["/usr/local/var/log/elasticsearch/", { "Ref": "ClusterName" }, "_index_indexing_slowlog.log"]] }, "tag": "indexing-slowlog" },
+                            { "filename": { "Fn::Join": ["", ["/usr/local/var/log/elasticsearch/", { "Ref": "ClusterName" }, "_index_search_slowlog.log"]] }, "tag": "search-slowlog" }
+                        ]
+                    },
                     "elasticsearch": {
                         "nginx": {
                             "users": [{
-                                "username": {
-                                    "Ref": "SearchUser"
-                                },
-                                "password": {
-                                    "Ref": "SearchPassword"
-                                }
+                                "username": { "Ref": "SearchUser" },
+                                "password": { "Ref": "SearchPassword" }
                             }],
                             "allow_cluster_api": "true",
                             "port": 80
                         },
                         "cluster": {
-                            "name": { "Ref" : "ClusterName"}
+                            "name": { "Ref" : "ClusterName" }
                         },
                         "gateway": {
                             "expected_nodes": { "Ref": "InstanceCount" }
@@ -262,18 +285,7 @@
                 "Type": "custom",
                 "Shortname": "search",
                 "CustomRecipes": {
-                    "Setup": [
-                        "apt",
-                        "ark",
-                        "elasticsearch",
-                        "elasticsearch::aws",
-                        "elasticsearch::proxy",
-                        "java",
-                        "layer-custom::esplugins",
-                        "layer-custom::allocation-awareness",
-                        "layer-custom::esmonit",
-                        "layer-custom::cloudwatch-custom"
-                    ]
+                    "Setup": { "Ref": "RecipeList" }
                 },
                 "EnableAutoHealing": false,
                 "AutoAssignElasticIps": false,
