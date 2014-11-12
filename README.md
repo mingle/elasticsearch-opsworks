@@ -2,7 +2,7 @@
 
 Deploy an ElasticSearch cluster to AWS OpsWorks from https://github.com/ThoughtWorksStudios/opsworks-elasticsearch-cookbook
 
-Take a look at https://github.com/ThoughtWorksStudios/opsworks-elasticsearch-cookbook/blob/75c4941b097c4b4d044b2a6cb745f587532e4fc6/Berksfile for all cookbook versions installed.
+Take a look at https://github.com/ThoughtWorksStudios/opsworks-elasticsearch-cookbook/blob/0.0.1/Berksfile for all cookbook versions installed.
 This has not been tested with other versions. YMMV.
 
 ## Before deployment
