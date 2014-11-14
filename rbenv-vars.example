@@ -7,6 +7,13 @@ AWS_REGION=<your AWS region>
 # This variable will namespace your AWS resources.
 ENVIRONMENT=<env name>
 
+# The ElasticSearch + AWS cloud plugin versions.
+# Note that specific versions of the AWS cloud plugin MUST match corresponding versions of ElasticSearch.
+# See https://github.com/elasticsearch/elasticsearch-cloud-aws for the version compatibility table.
+# If these are not specified, versions default to ES=1.3.5, plugin=2.3.0
+ELASTICSEARCH_VERSION=1.4.0
+ELASTICSEARCH_AWS_PLUGIN_VERSION=2.4.0
+
 # The following 2 variables setup elasticsearch server basic auth
 SEARCH_USER=elasticsearch
 SEARCH_PASSWORD=password

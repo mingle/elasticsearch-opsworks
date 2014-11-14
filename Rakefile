@@ -148,6 +148,13 @@ def get_required(name)
   ENV[name] || raise("You must provide the environment variable #{name}")
 end
 
+def add_param_if_set(params, param_name, env_var)
+  if ENV[env_var]
+    "Setting CloudFormation param #{param_name.inspect} => #{ENV[env_var].inspect}"
+    params.merge!(param_name => ENV[env_var])
+  end
+end
+
 desc "Provisions the ElasticSearch cluster"
 task :provision do
   cfm = AWS::CloudFormation.new
@@ -179,6 +186,9 @@ task :provision do
       "PaperTrailPort" => papertrail_port
     )
   end
+
+  add_param_if_set(params, "ElasticSearchVersion", "ELASTICSEARCH_VERSION")
+  add_param_if_set(params, "ElasticSearchAWSCloudPluginVersion", "ELASTICSEARCH_AWS_PLUGIN_VERSION")
 
   if cf_stack.exists?
     begin
