@@ -39,10 +39,10 @@ Destroy the environment:
 
 ## Infrastructure details
 
-    Route53 -- ELB -- EC2 attached with EBS
+    Route53 --> ELB --> EC2 attached to EBS volumes
 
-* Index will be stored on EBS
-* One master node by default
-* Load balanced by ELB
-* HTTPS only with basic auth
-* EC2 instance type defaults to c3.large
+* Index will be stored on EBS volumes, mounted at `/mnt/elasticsearch-data`
+* One master node by default, 2-node cluster by default
+* Load balanced by an ELB
+* Listens on HTTPS only, configured with basic auth challenge
+* EC2 instance type defaults to `c3.large`
