@@ -13,6 +13,18 @@
             "Default": "0.0.1"
         },
 
+        "ElasticSearchVersion": {
+            "Description": "The version of ElasticSearch to install.",
+            "Type": "String",
+            "Default": "1.3.5"
+        },
+
+        "ElasticSearchAWSCloudPluginVersion": {
+            "Description": "The version of the ElasticSearch AWS Cloud Plugin to install. Note that this version MUST correspond to the targeted version of ElasticSearch. See https://github.com/elasticsearch/elasticsearch-cloud-aws for the version compatibility table.",
+            "Type": "String",
+            "Default": "2.3.0"
+        },
+
         "RecipeList": {
             "Description": "The list of cookbooks to include when setting up the cluster.",
             "Type": "CommaDelimitedList"
@@ -163,10 +175,10 @@
                         ]
                     },
                     "elasticsearch": {
-                        "version": "1.3.5",
+                        "version": { "Ref": "ElasticSearchVersion" },
                         "plugins" : {
                             "elasticsearch/elasticsearch-cloud-aws": {
-                                "version": "2.3.0"
+                                "version": { "Ref": "ElasticSearchAWSCloudPluginVersion" }
                             }
                         },
                         "nginx": {
