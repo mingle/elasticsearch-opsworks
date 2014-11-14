@@ -14,22 +14,22 @@
         },
 
         "RecipeList": {
-            "Description": "The list of cookbooks to set up the cluster",
+            "Description": "The list of cookbooks to include when setting up the cluster.",
             "Type": "CommaDelimitedList"
         },
 
         "SSLCertificateName": {
-            "Description": "SSL cert.",
+            "Description": "The SSL certificate.",
             "Type": "String"
         },
 
         "InstanceCount": {
-            "Description": "How many nodes to expect in the cluster.",
+            "Description": "Number of nodes to spin up in the cluster. This also configures the `expected_nodes` setting in ElasticSearch, which serves as a hint when the cluster considers shard reallocation.",
             "Type": "String"
         },
 
         "MinMasterNodes": {
-            "Description": "How many master nodes should we have to consider cluster operational.",
+            "Description": "Number of master eligible nodes visible to a given node before accepting requests. When this criterion is not satisfied, a given node will assume it has split off from from the cluster. This setting this helps avoid a catastrophic split-brain scenario in the cluster. This is typically is set to [N/2 + 1] nodes.",
             "Type": "String"
         },
 
@@ -44,22 +44,22 @@
         },
 
         "ClusterName": {
-            "Description": "The name of the ElasticSearch cluster",
+            "Description": "The name of the ElasticSearch cluster.",
             "Type": "String"
         },
 
         "Route53ZoneName": {
-            "Description": "route53 zone under which to setup the DNS record",
+            "Description": "Route53 zone under which to setup the DNS record.",
             "Type": "String"
         },
 
         "SearchDomainName": {
-            "Description": "Domain name for the search service",
+            "Description": "Domain name to register for the cluster under Route53.",
             "Type": "String"
         },
 
         "SshKeyName": {
-            "Description": "SSH key name for EC2 instances",
+            "Description": "SSH key name for EC2 instances.",
             "Type": "String"
         },
 

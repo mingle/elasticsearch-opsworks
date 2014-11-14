@@ -3,7 +3,18 @@ require 'aws-sdk'
 
 SUCCESS_STATS = [:create_complete, :update_complete, :update_rollback_complete]
 FAILED_STATS = [:create_failed, :update_failed]
-DEFAULT_RECIPES = "apt,ark,elasticsearch,elasticsearch::aws,elasticsearch::proxy,java,layer-custom::esplugins,layer-custom::allocation-awareness,layer-custom::esmonit,layer-custom::cloudwatch-custom"
+DEFAULT_RECIPES = [
+  "apt",
+  "ark",
+  "elasticsearch",
+  "elasticsearch::aws",
+  "elasticsearch::proxy",
+  "java",
+  "layer-custom::esplugins",
+  "layer-custom::allocation-awareness",
+  "layer-custom::esmonit",
+  "layer-custom::cloudwatch-custom"
+].join(",")
 
 def opsworks
   AWS::OpsWorks::Client.new({:region => 'us-east-1'})
