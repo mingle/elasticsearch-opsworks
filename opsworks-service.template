@@ -84,6 +84,7 @@
         "PaperTrailPort": {
             "Description": "The PaperTrail endpoint port. Only required if you add the papertrail cookbook.",
             "Type": "Number",
+            "Default": 0,
             "MinValue" : "0",
             "MaxValue" : "65535"
         }
