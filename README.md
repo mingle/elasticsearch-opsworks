@@ -1,5 +1,7 @@
 # ElasticSearch OpsWorks
 
+[Built with :yellow_heart: and :coffee: in San Francisco](http://getmingle.io)
+
 Deploy an ElasticSearch cluster to AWS OpsWorks from https://github.com/ThoughtWorksStudios/opsworks-elasticsearch-cookbook
 
 Take a look at https://github.com/ThoughtWorksStudios/opsworks-elasticsearch-cookbook/blob/0.0.1/Berksfile for all cookbook versions installed.
