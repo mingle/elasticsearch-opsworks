@@ -21,8 +21,8 @@ Please setup the following dependencies in your AWS region:
 
 * Clone this repository
 * Run `init_rbenv` to setup the rbenv environment, gems, etc. if you don't have it yet
-** This is designed to be used in a clean environment, e.g. build agents
-** The script "go" is a script to run rake tasks in a build
+  * This is designed to be used in a clean environment, e.g. build agents
+  * The script "go" is a script to run rake tasks in a build
 * `cp rbenv-vars.example .rbenv-vars`
 * Fill out values in .rbenv-vars to suit your deployment
 
