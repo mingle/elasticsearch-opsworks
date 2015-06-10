@@ -1,5 +1,7 @@
 require 'aws-sdk'
+require 'dotenv'
 
+Dotenv.load
 
 SUCCESS_STATS = [:create_complete, :update_complete, :update_rollback_complete]
 FAILED_STATS = [:create_failed, :update_failed]
