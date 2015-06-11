@@ -1,1 +1,9 @@
-.rbenv-vars
+# vim artifact
+*.swp
+*.swo
+
+# Mac finder artifacts
+.DS_Store
+
+# Environment variables
+.env

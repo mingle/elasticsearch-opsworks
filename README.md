@@ -1,11 +1,6 @@
 # ElasticSearch OpsWorks
 
-[Built with :yellow_heart: and :coffee: in San Francisco](http://getmingle.io)
-
-Deploy an ElasticSearch cluster to AWS OpsWorks from https://github.com/ThoughtWorksStudios/opsworks-elasticsearch-cookbook
-
-Take a look at https://github.com/ThoughtWorksStudios/opsworks-elasticsearch-cookbook/blob/0.0.1/Berksfile for all cookbook versions installed.
-This has not been tested with other versions. YMMV.
+This is a fork of (ThoughtWorks Studios - Elasticsearch OpsWorks repo)[https://github.com/ThoughtWorksStudios/elasticsearch-opsworks].
 
 ## Before deployment
 
@@ -20,11 +15,10 @@ Please setup the following dependencies in your AWS region:
 ## Setup environment
 
 * Clone this repository
-* Run `init_rbenv` to setup the rbenv environment, gems, etc. if you don't have it yet
-  * This is designed to be used in a clean environment, e.g. build agents
-  * The script "go" is a script to run rake tasks in a build
-* `cp rbenv-vars.example .rbenv-vars`
-* Fill out values in .rbenv-vars to suit your deployment
+* Install jruby 1.7.16.1:
+* Run bundle
+* `cp env.example .env`
+* Fill out values in .env to suit your deployment
 
 ## Usage
 
