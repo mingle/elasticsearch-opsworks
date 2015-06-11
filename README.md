@@ -1,6 +1,6 @@
 # ElasticSearch OpsWorks
 
-This is a fork of (ThoughtWorks Studios - Elasticsearch OpsWorks repo)[https://github.com/ThoughtWorksStudios/elasticsearch-opsworks].
+This is a fork of [ThoughtWorks Studios - Elasticsearch OpsWorks repo](https://github.com/ThoughtWorksStudios/elasticsearch-opsworks).
 
 ## Before deployment
 
