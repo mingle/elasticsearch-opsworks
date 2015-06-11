@@ -15,7 +15,7 @@ Please setup the following dependencies in your AWS region:
 ## Setup environment
 
 * Clone this repository
-* Install jruby 1.7.16.1:
+* Install jruby 1.7.16.1
 * Run bundle
 * `cp env.example .env`
 * Fill out values in .env to suit your deployment
