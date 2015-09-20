@@ -17,7 +17,7 @@ DEFAULT_RECIPES = [
 ].join(",")
 
 def opsworks
-  Aws::OpsWorks::Client.new({region: 'us-east-1'})
+  Aws::OpsWorks::Client.new({region: get_required("AWS_REGION")})
 end
 
 def wait_for_cf_stack_op_to_finish
