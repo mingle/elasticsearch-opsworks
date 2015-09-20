@@ -45,6 +45,12 @@
             "Type": "String"
         },
 
+        "DataVolumeSize": {
+            "Description": "Size(GB) of mounted EBS data volume where ElasticSearch data will be stored.",
+            "Type": "Number",
+            "Default": 100
+        },
+
         "MinMasterNodes": {
             "Description": "Number of master eligible nodes visible to a given node before accepting requests. When this criterion is not satisfied, a given node will assume it has split off from from the cluster. This setting this helps avoid a catastrophic split-brain scenario in the cluster. This is typically is set to [N/2 + 1] nodes.",
             "Type": "String"
@@ -318,7 +324,8 @@
                     {
                         "MountPoint": "/mnt/elasticsearch-data",
                         "NumberOfDisks": 1,
-                        "Size": 100
+                        "VolumeType": "gp2",
+                        "Size": { "Ref": "DataVolumeSize" }
                     }
                 ],
                 "CustomSecurityGroupIds": [

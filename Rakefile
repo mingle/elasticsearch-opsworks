@@ -168,6 +168,7 @@ end
 desc "Provisions the ElasticSearch cluster"
 task :provision do
   instance_count = (ENV["INSTANCE_COUNT"] || "2").to_i
+  data_volume_size = (ENV["DATA_VOLUME_SIZE"] || "100").to_i
   template = File.read("opsworks-service.template")
 
   parameters = {
@@ -179,6 +180,7 @@ task :provision do
     "SearchUser"         => ENV["SEARCH_USER"] || "elasticsearch",
     "SearchPassword"     => ENV["SEARCH_PASSWORD"] || "pass",
     "InstanceDefaultOs"  => ENV["INSTANCE_DEFAULT_OS"] || "Amazon Linux 2014.09",
+    "DataVolumeSize"     => data_volume_size.to_s,
     "InstanceCount"      => instance_count.to_s,
     "MinMasterNodes"     => min_master_node_count(instance_count).to_s,
     "ClusterName"        => "#{environment}-search-cluster",
