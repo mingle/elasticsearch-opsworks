@@ -40,6 +40,11 @@
             "Type": "String"
         },
 
+        "InstanceDefaultOs": {
+            "Description": "The stack's default operating system, which is installed on every instance unless you specify a different operating system when you create the instance.",
+            "Type": "String"
+        },
+
         "MinMasterNodes": {
             "Description": "Number of master eligible nodes visible to a given node before accepting requests. When this criterion is not satisfied, a given node will assume it has split off from from the cluster. This setting this helps avoid a catastrophic split-brain scenario in the cluster. This is typically is set to [N/2 + 1] nodes.",
             "Type": "String"
@@ -242,7 +247,7 @@
                     "BerkshelfVersion": "3.1.3",
                     "ManageBerkshelf": true
                 },
-                "DefaultOs": "Amazon Linux 2014.09",
+                "DefaultOs": { "Ref": "InstanceDefaultOs" },
                 "DefaultRootDeviceType": "ebs",
                 "DefaultSshKeyName": { "Ref": "SshKeyName" },
                 "UseCustomCookbooks": true,

@@ -170,16 +170,17 @@ task :provision do
 
   parameters = {
     "SSLCertificateName" => get_required("SSL_CERTIFICATE_NAME"),
-    "Route53ZoneName" => get_required("ROUTE53_ZONE_NAME"),
-    "SearchDomainName" => get_required("SEARCH_DOMAIN_NAME"),
+    "Route53ZoneName"    => get_required("ROUTE53_ZONE_NAME"),
+    "SearchDomainName"   => get_required("SEARCH_DOMAIN_NAME"),
 
-    "SshKeyName" => ENV["SSH_KEY_NAME"] || "elasticsearch",
-    "SearchUser" => ENV["SEARCH_USER"] || "elasticsearch",
-    "SearchPassword" => ENV["SEARCH_PASSWORD"] || "pass",
-    "InstanceCount" => instance_count.to_s,
-    "MinMasterNodes" => min_master_node_count(instance_count).to_s,
-    "ClusterName" => "#{environment}-search-cluster",
-    "RecipeList" => DEFAULT_RECIPES
+    "SshKeyName"         => ENV["SSH_KEY_NAME"] || "elasticsearch",
+    "SearchUser"         => ENV["SEARCH_USER"] || "elasticsearch",
+    "SearchPassword"     => ENV["SEARCH_PASSWORD"] || "pass",
+    "InstanceDefaultOs"  => ENV["INSTANCE_DEFAULT_OS"] || "Amazon Linux 2014.09",
+    "InstanceCount"      => instance_count.to_s,
+    "MinMasterNodes"     => min_master_node_count(instance_count).to_s,
+    "ClusterName"        => "#{environment}-search-cluster",
+    "RecipeList"         => DEFAULT_RECIPES
   }
 
   if ENV["PAPERTRAIL_ENDPOINT"].to_s =~ /[^\:]+:[\d]+/
