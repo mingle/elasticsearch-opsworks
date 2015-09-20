@@ -1,1 +1,3 @@
 .rbenv-vars
+.ruby-version
+.ruby-gemset
