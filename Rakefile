@@ -244,7 +244,7 @@ task :destroy do
     end
 
     puts "Deleting OpsWorks stack #{stack_name}"
-    cf_stack.delete
+    cfm.delete_stack({stack_name: stack_name})
   else
     puts "Environment #{environment} does not exist"
   end
