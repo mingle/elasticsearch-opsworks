@@ -25,6 +25,9 @@ INSTANCE_TYPE=c3.large
 # The stack's default operating system, which is installed on every instance unless you specify a different operating system when you create the instance, defaults to "Amazon Linux 2014.09"
 INSTANCE_DEFAULT_OS=Amazon Linux 2014.09
 
+# Size(GB) of mounted EBS data volume where ElasticSearch data will be stored.
+DATA_VOLUME_SIZE=100
+
 # To access your elastic search server through https instead of http
 SSL_CERTIFICATE_NAME=<your aws ssl cert name>
 
