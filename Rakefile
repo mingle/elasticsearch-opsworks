@@ -177,7 +177,7 @@ task :provision do
     "SshKeyName"         => ENV["SSH_KEY_NAME"] || "elasticsearch",
     "SearchUser"         => ENV["SEARCH_USER"] || "elasticsearch",
     "SearchPassword"     => ENV["SEARCH_PASSWORD"] || "pass",
-    "InstanceDefaultOs"  => ENV["INSTANCE_DEFAULT_OS"] || "Amazon Linux 2014.09",
+    "InstanceDefaultOs"  => ENV["INSTANCE_DEFAULT_OS"] || "Amazon Linux 2015.03",
     "DataVolumeSize"     => data_volume_size.to_s,
     "InstanceCount"      => instance_count.to_s,
     "MinMasterNodes"     => min_master_node_count(instance_count).to_s,
