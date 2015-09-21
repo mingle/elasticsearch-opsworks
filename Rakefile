@@ -17,7 +17,7 @@ DEFAULT_RECIPES = [
 ].join(",")
 
 def opsworks
-  Aws::OpsWorks::Client.new({region: 'us-east-1'})
+  Aws::OpsWorks::Client.new({region: get_required("AWS_REGION")})
 end
 
 def wait_for_cf_stack_op_to_finish
@@ -166,20 +166,23 @@ end
 desc "Provisions the ElasticSearch cluster"
 task :provision do
   instance_count = (ENV["INSTANCE_COUNT"] || "2").to_i
+  data_volume_size = (ENV["DATA_VOLUME_SIZE"] || "100").to_i
   template = File.read("opsworks-service.template")
 
   parameters = {
     "SSLCertificateName" => get_required("SSL_CERTIFICATE_NAME"),
-    "Route53ZoneName" => get_required("ROUTE53_ZONE_NAME"),
-    "SearchDomainName" => get_required("SEARCH_DOMAIN_NAME"),
+    "Route53ZoneName"    => get_required("ROUTE53_ZONE_NAME"),
+    "SearchDomainName"   => get_required("SEARCH_DOMAIN_NAME"),
 
-    "SshKeyName" => ENV["SSH_KEY_NAME"] || "elasticsearch",
-    "SearchUser" => ENV["SEARCH_USER"] || "elasticsearch",
-    "SearchPassword" => ENV["SEARCH_PASSWORD"] || "pass",
-    "InstanceCount" => instance_count.to_s,
-    "MinMasterNodes" => min_master_node_count(instance_count).to_s,
-    "ClusterName" => "#{environment}-search-cluster",
-    "RecipeList" => DEFAULT_RECIPES
+    "SshKeyName"         => ENV["SSH_KEY_NAME"] || "elasticsearch",
+    "SearchUser"         => ENV["SEARCH_USER"] || "elasticsearch",
+    "SearchPassword"     => ENV["SEARCH_PASSWORD"] || "pass",
+    "InstanceDefaultOs"  => ENV["INSTANCE_DEFAULT_OS"] || "Amazon Linux 2014.09",
+    "DataVolumeSize"     => data_volume_size.to_s,
+    "InstanceCount"      => instance_count.to_s,
+    "MinMasterNodes"     => min_master_node_count(instance_count).to_s,
+    "ClusterName"        => "#{environment}-search-cluster",
+    "RecipeList"         => DEFAULT_RECIPES
   }
 
   if ENV["PAPERTRAIL_ENDPOINT"].to_s =~ /[^\:]+:[\d]+/
@@ -242,7 +245,7 @@ task :destroy do
     end
 
     puts "Deleting OpsWorks stack #{stack_name}"
-    cf_stack.delete
+    cfm.delete_stack({stack_name: stack_name})
   else
     puts "Environment #{environment} does not exist"
   end
