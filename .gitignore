@@ -1,3 +1,5 @@
 .rbenv-vars
 .ruby-version
 .ruby-gemset
+.bundle
+vendor
