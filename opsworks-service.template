@@ -219,7 +219,7 @@
                         },
                         "cloud": {
                             "aws": {
-                                "region": "us-east-1"
+                                "region": { "Ref": "AWS::Region" }
                             }
                         },
                         "custom_config": {
