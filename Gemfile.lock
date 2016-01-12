@@ -1,21 +1,23 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    aws-sdk (1.57.0)
-      aws-sdk-v1 (= 1.57.0)
-    aws-sdk-v1 (1.57.0)
-      json (~> 1.4)
-      nokogiri (>= 1.4.4)
-    json (1.8.1-java)
-    nokogiri (1.6.4-java)
+    aws-sdk (2.1.20)
+      aws-sdk-resources (= 2.1.20)
+    aws-sdk-core (2.1.20)
+      jmespath (~> 1.0)
+    aws-sdk-resources (2.1.20)
+      aws-sdk-core (= 2.1.20)
+    jmespath (1.0.2)
+      multi_json (~> 1.0)
+    multi_json (1.11.2)
     rake (10.3.2)
 
 PLATFORMS
   java
 
 DEPENDENCIES
-  aws-sdk
+  aws-sdk (~> 2.1.19)
   rake
 
 BUNDLED WITH
-   1.10.3
+   1.10.6
