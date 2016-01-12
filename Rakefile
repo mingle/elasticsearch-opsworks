@@ -9,7 +9,6 @@ DEFAULT_RECIPES = [
   "apt",
   "ark",
   "elasticsearch",
-  "elasticsearch::aws",
   "elasticsearch::proxy",
   "java",
   "layer-custom::esplugins",
@@ -143,7 +142,7 @@ def environment
 end
 
 def stack_name
-  "#{environment}-search"
+  "#{environment}"
 end
 
 def get_required(name)
@@ -199,7 +198,6 @@ task :provision do
   end
 
   add_param_if_set(parameters, "ElasticSearchVersion", "ELASTICSEARCH_VERSION")
-  add_param_if_set(parameters, "ElasticSearchAWSCloudPluginVersion", "ELASTICSEARCH_AWS_PLUGIN_VERSION")
 
   params = parameters.inject([]) do |array, (key, value)|
     array << { parameter_key: key, parameter_value: value }
