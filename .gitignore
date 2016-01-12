@@ -7,3 +7,6 @@
 
 # Environment variables
 .env
+.rbenv-vars
+.ruby-version
+.ruby-gemset
