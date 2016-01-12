@@ -14,6 +14,17 @@ if [ ! -d $RBENV_ROOT ]; then
     source ~/.profile
 fi
 
+RBENV=$(which rbenv)
+
+if [ "" = $RBENV ]; then
+  RBENV="${RBENV_ROOT}/bin/rbenv"
+fi
+
+if [ ! -f $RBENV ]; then
+  echo "Cannot find rbenv in your path or under .rbenv.  Please check your rbenv installation."
+  exit
+fi
+
 if [ ! -d $RBENV_ROOT/plugins/rbenv-update ]; then
     echo "Installing rbenv-update plugin."
     git clone https://github.com/rkh/rbenv-update.git $RBENV_ROOT/plugins/rbenv-update
@@ -36,17 +47,17 @@ fi
 
 if [ ! -d $RBENV_ROOT/versions/$RBENV_VERSION ]; then
     echo "Installing ruby ${RBENV_VERSION}."
-    $RBENV_ROOT/bin/rbenv update
-    $RBENV_ROOT/bin/rbenv install $RBENV_VERSION
+    $RBENV update
+    $RBENV install $RBENV_VERSION
     echo "done"
 elif [[ ("true" = "${RBENV_UPDATE:-false}") || ($(uname -a) =~ Darwin) ]]; then
     echo "Updating rbenv..."
-    $RBENV_ROOT/bin/rbenv update
+    $RBENV update
 else
     echo "Environment up to date, ruby version: $RBENV_VERSION"
 fi
 
-if ! (echo $PATH | grep -F ".rbenv/bin" > /dev/null 2>&1); then
+if [[ -d "${RBENV_ROOT}/bin" && ! $(echo $PATH | grep -F ".rbenv/bin") ]]; then
   echo "Adding rbenv to PATH - you need to restart your shell"
   echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> $HOME/.bash_profile
 fi
@@ -56,6 +67,6 @@ if ! (type rbenv > /dev/null 2>&1); then
   echo 'eval "$(rbenv init -)"' >> $HOME/.bash_profile
 fi
 
-$RBENV_ROOT/bin/rbenv exec gem install --no-ri --no-rdoc bundler
-$RBENV_ROOT/bin/rbenv exec bundle install
-$RBENV_ROOT/bin/rbenv rehash
+$RBENV exec gem install --no-ri --no-rdoc bundler
+$RBENV exec bundle install
+$RBENV rehash
