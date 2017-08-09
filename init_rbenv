@@ -1,5 +1,7 @@
 #!/bin/bash
 
+BUNDLER_VERSION="1.11.2"
+
 export RBENV_VERSION=$(cat .ruby-version)
 export RBENV_ROOT=$HOME/.rbenv
 
@@ -9,20 +11,6 @@ unset GEM_HOME
 if [ ! -d $RBENV_ROOT ]; then
     echo "Installing rbenv."
     git clone git://github.com/sstephenson/rbenv.git $RBENV_ROOT
-    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.profile
-    echo 'eval "$(rbenv init -)"' >> ~/.profile
-    source ~/.profile
-fi
-
-RBENV=$(which rbenv)
-
-if [ "" = $RBENV ]; then
-  RBENV="${RBENV_ROOT}/bin/rbenv"
-fi
-
-if [ ! -f $RBENV ]; then
-  echo "Cannot find rbenv in your path or under .rbenv.  Please check your rbenv installation."
-  exit
 fi
 
 if [ ! -d $RBENV_ROOT/plugins/rbenv-update ]; then
@@ -47,26 +35,42 @@ fi
 
 if [ ! -d $RBENV_ROOT/versions/$RBENV_VERSION ]; then
     echo "Installing ruby ${RBENV_VERSION}."
-    $RBENV update
-    $RBENV install $RBENV_VERSION
+    $RBENV_ROOT/bin/rbenv update
+    $RBENV_ROOT/bin/rbenv install $RBENV_VERSION
+
+    if [[ $RBENV_VERSION =~ "jruby" ]]; then
+      # should be the same as pristine since this is a new install, but `gem pristine` hits file permissions errors the first time
+      $RBENV_ROOT/bin/rbenv exec gem install jruby-launcher
+    fi
+
     echo "done"
 elif [[ ("true" = "${RBENV_UPDATE:-false}") || ($(uname -a) =~ Darwin) ]]; then
     echo "Updating rbenv..."
-    $RBENV update
+    $RBENV_ROOT/bin/rbenv update
 else
     echo "Environment up to date, ruby version: $RBENV_VERSION"
 fi
 
-if [[ -d "${RBENV_ROOT}/bin" && ! $(echo $PATH | grep -F ".rbenv/bin") ]]; then
-  echo "Adding rbenv to PATH - you need to restart your shell"
+if ! (echo $PATH | grep -F "$RBENV_ROOT" > /dev/null 2>&1 && grep -F 'export PATH="$HOME/.rbenv' $HOME/.bash_profile 2>&1 > /dev/null); then
+  echo "Adding rbenv to PATH"
   echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> $HOME/.bash_profile
+  export PATH="$RBENV_ROOT/bin:$PATH"
 fi
 
-if ! (type rbenv > /dev/null 2>&1); then
-  echo "Initializing rbenv in your .bash_profile - you need to restart your shell"
+if ! (type rbenv > /dev/null 2>&1 && grep -F 'eval "$(rbenv init -)"' $HOME/.bash_profile 2>&1 > /dev/null); then
+  echo "Initializing rbenv in your .bash_profile"
   echo 'eval "$(rbenv init -)"' >> $HOME/.bash_profile
+  eval "$(rbenv init -)"
 fi
 
-$RBENV exec gem install --no-ri --no-rdoc bundler
-$RBENV exec bundle install
-$RBENV rehash
+if ! ($RBENV_ROOT/shims/bundle --version 2> /dev/null | grep -F "$BUNDLER_VERSION" > /dev/null 2>&1); then
+    echo "installing bundler $BUNDLER_VERSION"
+    cmd="$RBENV_ROOT/bin/rbenv exec gem install --no-ri --no-rdoc bundler -v $BUNDLER_VERSION"
+    echo "executing: $cmd"
+    $cmd
+    echo "done, result: $?"
+fi
+unset BUNDLER_VERSION
+
+$RBENV_ROOT/bin/rbenv exec ruby -S bundle install
+$RBENV_ROOT/bin/rbenv rehash
