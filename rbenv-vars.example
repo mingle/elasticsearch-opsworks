@@ -31,6 +31,9 @@ DATA_VOLUME_SIZE=100
 # To access your elastic search server through https instead of http
 SSL_CERTIFICATE_NAME=<your aws ssl cert name>
 
+# Public download url for jdk 7 because oracle website download mechanism keeps changing
+JDK_7_DOWNLOAD_URL=<public download url>
+
 # You need to create an SSH key pair in your AWS region
 SSH_KEY_NAME=elasticsearch
 

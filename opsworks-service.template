@@ -10,7 +10,7 @@
         "CookbookRepoRevision": {
             "Description": "Git Revision/Tag",
             "Type": "String",
-            "Default": "0.0.1"
+            "Default": "0.0.2"
         },
 
         "ElasticSearchVersion": {
@@ -73,6 +73,11 @@
 
         "Route53ZoneName": {
             "Description": "Route53 zone under which to setup the DNS record.",
+            "Type": "String"
+        },
+
+        "Jdk7DownloadUrl": {
+            "Description": "Download URL for JDK 7.",
             "Type": "String"
         },
 
@@ -173,6 +178,13 @@
                         "jdk_version": "7",
                         "oracle": {
                             "accept_oracle_download_terms": "true"
+                        },
+                        "jdk" : {
+                            "7": {
+                                "x86_64": {
+                                    "url" : { "Ref" : "Jdk7DownloadUrl" }
+                                }
+                            }
                         },
                         "accept_license_agreement": "true",
                         "install_flavor": "oracle"

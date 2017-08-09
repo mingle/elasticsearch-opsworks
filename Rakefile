@@ -173,6 +173,7 @@ task :provision do
     "SSLCertificateName" => get_required("SSL_CERTIFICATE_NAME"),
     "Route53ZoneName"    => get_required("ROUTE53_ZONE_NAME"),
     "SearchDomainName"   => get_required("SEARCH_DOMAIN_NAME"),
+    "Jdk7DownloadUrl"    => ENV["JDK_7_DOWNLOAD_URL"] || "",
 
     "SshKeyName"         => ENV["SSH_KEY_NAME"] || "elasticsearch",
     "SearchUser"         => ENV["SEARCH_USER"] || "elasticsearch",
