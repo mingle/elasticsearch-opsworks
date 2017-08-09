@@ -17,7 +17,7 @@ DEFAULT_RECIPES = [
 ].join(",")
 
 def opsworks
-  Aws::OpsWorks::Client.new({region: get_required("AWS_REGION")})
+  Aws::OpsWorks::Client.new({region: get_required("AWS_OPSWORKS_API_REGION")})
 end
 
 def wait_for_cf_stack_op_to_finish
@@ -25,7 +25,7 @@ def wait_for_cf_stack_op_to_finish
   puts "[Stack: #{stack_name}]: current status: #{stats}"
 
   while !SUCCESS_STATS.include?(stats)
-    sleep 15
+    sleep 3
     stats = cfm.describe_stacks({stack_name: stack_name}).stacks[0].stack_status.downcase.to_sym
     raise "Resource stack update failed!" if FAILED_STATS.include?(stats)
     puts "[Stack: #{stack_name}]: current status: #{stats}"

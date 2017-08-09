@@ -40,5 +40,7 @@ ROUTE53_ZONE_NAME=<your aws Route 53 zone>.
 # example: search.es.com
 SEARCH_DOMAIN_NAME=<your search domain name>
 
+AWS_OPSWORKS_API_REGION=us-east-1
+
 # If you would like to log to PaperTrail, uncomment this setting and configure the endpoint here (hostame:port).
 # PAPERTRAIL_ENDPOINT=logs.papertrailapp.com:<your-port>
