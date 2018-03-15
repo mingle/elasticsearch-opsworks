@@ -10,7 +10,7 @@
         "CookbookRepoRevision": {
             "Description": "Git Revision/Tag",
             "Type": "String",
-            "Default": "0.0.3"
+            "Default": "0.0.4"
         },
 
         "ElasticSearchVersion": {
